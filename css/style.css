@@ -1,0 +1,165 @@
+body{
+  background: #fff url(../images/bg.jpeg) repeat top left;
+  background-size: cover;
+}
+body::before {
+  display: none;
+}
+
+.container {
+  height: 100%;
+  width: 50%;
+  margin: auto;
+  font-size: 1.3em;
+}
+
+.container > * {
+  width: 100%;
+  text-align: center;
+}
+
+.container > header{
+	padding: 10px 30px 15px 30px;
+	margin: 0px 20px 10px 20px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 5px;
+	position: relative;
+	display: block;
+}
+.container > header h1{
+	font-family: 'Oswald', Arial, sans-serif;
+	font-size: 1.8em;
+	line-height: 35px;
+	position: relative;
+	font-weight: 400;
+	color: rgba(26,89,120,0.9);
+}
+.container > header h1 span{
+	color: #463E40;
+  text-shadow: 0px 1px 1px rgba(255,255,255,0.8);
+}
+
+.typ-subhed {
+  font-family: 'Oswald', sans-serif;
+  font-size: 18px;
+  line-height: 20px;
+  letter-spacing: 0;
+}
+
+.ctrl-standard.fx-bubbleDown {
+  color: #f0b81f;
+  border-color: #f0b81f;
+}
+.ctrl-standard.fx-bubbleDown::after {
+  bottom: auto;
+  background: #f0b81f;
+}
+.ctrl-standard.fx-bubbleDown.is-reversed::after {
+  height: 300%;
+}
+.ctrl-standard.fx-bubbleDown.is-reversed:hover {
+  color: #f0b81f;
+}
+.ctrl-standard.fx-bubbleDown.is-reversed:hover::after {
+  height: 0;
+}
+.ctrl-standard.fx-bubbleUp {
+  color: #9fa255;
+  border-color: #9fa255;
+}
+.ctrl-standard.fx-bubbleUp::after {
+  top: auto;
+  background: #9fa255;
+}
+.ctrl-standard.fx-bubbleUp.is-reversed::after {
+  height: 300%;
+}
+.ctrl-standard.fx-bubbleUp.is-reversed:hover {
+  color: #9fa255;
+}
+.ctrl-standard.fx-bubbleUp.is-reversed:hover::after {
+  height: 0;
+}
+.ctrl-standard.fx-sliderIn {
+  color: #81aaa4;
+  border-color: #81aaa4;
+}
+.ctrl-standard.fx-sliderIn::after {
+  background: #81aaa4;
+}
+.ctrl-standard.fx-sliderIn.is-reversed::after {
+  width: 300%;
+}
+.ctrl-standard.fx-sliderIn.is-reversed:hover {
+  color: #81aaa4;
+}
+.ctrl-standard.fx-sliderIn.is-reversed:hover::after {
+  width: 0;
+}
+[class*="ctrl-"] {
+  padding: 5ox 10px;
+  border-radius: 2px;
+  border: 1px solid #231f20;
+}
+[class*="ctrl-"][class*="fx-"]:hover,
+[class*="ctrl-"][class*="fx-"].active {
+  color: #231f20;
+}
+[class*="ctrl-"][class*="fx-"].is-reversed {
+  color: #231f20;
+}
+
+  [class*="fx-"],[class*="fx-"]:hover {
+    transition: color 0.5s  ease-in-out;
+  }
+  [class*="fx-"]:not(.fx-dyna) {
+    position: relative;
+    z-index: 1;
+    transition-delay: 0.2s !important;
+    overflow: hidden;
+  }
+  [class*="fx-"]:not(.fx-dyna)::after,[class*="fx-"]:not(.fx-dyna)::before {
+    content: "";
+    display: block;
+    position: absolute;
+    z-index: -1;
+  }
+  [class*="fx-bubble"]::after {
+    transition: height 0.5s ease-in-out;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 0;
+    width: 100%;
+  }
+  [class*="fx-bubble"]:hover::after,[class*="fx-bubble"].active::after {
+    transition: height 0.5s ease-in-out;
+    height: 300%;
+  }
+  [class*="fx-bubble"]:disabled:hover::after {
+    height: 0;
+  }
+  .fx-sliderIn::after {
+    transition: width 0.5s ease-in-out;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 0;
+  }
+  .fx-sliderIn:hover::after,.fx-sliderIn.active::after {
+    transition: width 0.5s ease-in-out;
+    width: 100%;
+  }
+  :checked + .fx-sliderIn::after,.fx-sliderIn.active::after {
+    width: 300%;
+  }
+
+  .foot{
+    font-size: .8em;
+  }
+
+  .foot > a{
+  	color: red;
+  }
