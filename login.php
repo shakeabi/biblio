@@ -38,6 +38,7 @@ include_once('functions.php');
     $flag = 0;
     $_SESSION['curr_user'] = $db_username;
     $_SESSION['curr_id'] = $db_id;
+    $_SESSION['visibility'] = "public";
     redirect("home.php");
   }
   else{

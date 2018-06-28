@@ -36,6 +36,8 @@
       searchBooks(searchInput.value,1);
   }
 
+  var curr_user_id = <?php echo $_SESSION['curr_id'];?> 
+
 
 </script>
 

@@ -95,6 +95,7 @@ if(isset($_POST['register'])){
                 }
 
                 $_SESSION['curr_id'] = $db_id;
+                $_SESSION['visibility'] = "public";
 
                 //creating personal tables..
                 $table = $_SESSION['curr_id']."shelves";
@@ -126,9 +127,9 @@ if(isset($_POST['register'])){
                     bookName VARCHAR(255) NOT NULL,
                     authorName VARCHAR(255),
                     imgLink VARCHAR(1023),
-                    statusAct VARCHAR(255),
+                    status VARCHAR(255),
                     shelf VARCHAR(255),
-                    likes VARCHAR(255) DEFAULT 'false',
+                    likes VARCHAR(255) DEFAULT '0',
                     volId VARCHAR(255) NOT NULL
                     )";
                 $result_temp = $connection->query($query);
@@ -141,8 +142,9 @@ if(isset($_POST['register'])){
                     authorName VARCHAR(255),
                     imgLink VARCHAR(1023),
                     activity VARCHAR(255),
+                    actSupport VARCHAR(255),
                     volId VARCHAR(255),
-                    public VARCHAR(255)
+                    visibility VARCHAR(255)
                     )";
                 $result_temp = $connection->query($query);
                 confirmQuery($result_temp);

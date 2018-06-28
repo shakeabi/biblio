@@ -20,10 +20,10 @@
                     <a href="profile.php">Profile</a>
                 </li>
                 <li class="list-group-item" style="margin:5px;border-radius:5px;">
-                    ActivityMode(Private):
+                    <span id="torefresh">ActivityMode(<?php echo ucfirst($_SESSION['visibility']); ?>):</span>
                     <div class="material-switch pull-right">
-                        <input id="someSwitchOptionPrimary" name="someSwitchOption001" type="checkbox"/>
-                        <label for="someSwitchOptionPrimary" class="label-success"></label>
+                        <input id="switchVisibility" name="someSwitchOption001" type="checkbox"/>
+                        <label for="switchVisibility" class="label-success"></label>
                     </div>
                 </li>
 
@@ -43,7 +43,7 @@
               <li>
                 <form class="form-inline" style="position:relative;top:10px;">
                   <input class="form-control mr-sm-2" type="search" id="searchBar" placeholder="Search" name="Search" onkeyup="searchBooks(this.value,0);" onfocus="searchBooks(this.value,0);">
-                  <span class="glyphicon glyphicon-search" style="color:white;cursor:pointer;padding-left:3px;font-size:20px;" onclick="search();"></span>
+                  <span class="glyphicon glyphicon-search" style="color:grey;cursor:pointer;padding-left:3px;font-size:20px;" onmouseenter="this.style.color='white';" onmouseleave="this.style.color='grey';" onclick="search();"></span>
                 </form>
               </li>
               <li>

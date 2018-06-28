@@ -1,4 +1,32 @@
-var randBooks = ["brief+history","diary+of","harry+potter","pride","alice","jungle+book"];
+var randBooks = ["brief+history","diary+of","harry+potter","pride","alice","jungle+book","famous+five","mystery"];
+var shelvesList = [];
+
+document.getElementById('switchVisibility').onclick = function(){
+  var xmlhttp;
+  if (window.XMLHttpRequest) {
+        xmlhttp = new XMLHttpRequest();
+  }
+   else{
+      xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+
+  var url = "toggleVisibility.php";
+  xmlhttp.onreadystatechange = function(){
+	    if(this.readyState==4&&this.status==200){
+        if(this.responseText == true)
+          console.log('visibility changed');
+        else {
+          console.log("couldn't change");
+        }
+	    }
+    };
+
+    xmlhttp.open("POST",url,true);//true implies asynchronous
+    xmlhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+    xmlhttp.send();
+
+    load();
+}
 
 function createEle(ele,attribute,displayValue){
   var temp = document.createElement(ele);
@@ -22,7 +50,7 @@ function displayBooks(ftitle,fauthor,fdesc,fimgLink,favgRating,fvolumeId,readMor
   img.setAttribute("alt","Sorry image not available!");
 
   var bookDetails = createEle("div",{attr:"class",val:"col-sm-7"},"");
-  var title = createEle("h2",{attr:"id",val:"itemTitle"},ftitle + "<small id='itemAuthor'> by " + fauthor + "</small>");
+  var title = createEle("h2",{attr:"id",val:"itemTitle"},"<span>" + ftitle +"</span>"+ "<small id='itemAuthor'> by " + fauthor + "</small>");
   var hr1 = document.createElement("hr");
   var hr2 = document.createElement("hr");
   var description = createEle("p",{attr:"id",val:"itemDesc"},fdesc);
@@ -43,29 +71,40 @@ function displayBooks(ftitle,fauthor,fdesc,fimgLink,favgRating,fvolumeId,readMor
   var optionsRow1 = createEle("div",{attr:"class",val:"row"},"");
 
   var statusDiv = createEle("div",{attr:"class",val:"col-sm-6"},"");
-  var itemStatus = createEle("select",{attr:"class",val:"form-control"},"<option selected disabled>Status</option><option value='1'>Want to read</option><option value='2'>Currently reading</option><option value='3'>Finished reading</option>")
+  var itemStatus = createEle("select",{attr:"class",val:"form-control"},"<option selected disabled>Status</option><option value='Want to read'>Want to read</option><option value='Currently reading'>Currently reading</option><option value='Finished reading'>Finished reading</option>");
   itemStatus.setAttribute("title","Status");
+  itemStatus.addEventListener("change",statusChange,false);
   statusDiv.appendChild(itemStatus);
+
   var shelvesDiv = createEle("div",{attr:"class",val:"col-sm-6"},"");
-  var currShelf = createEle("select",{attr:"class",val:"form-control"},"<option selected disabled>Shelf</option><option value='1'>Want to read</option><option value='2'>Currently reading</option><option value='3'>Finished reading</option>")
+  var currShelf = createEle("select",{attr:"class",val:"form-control"},"<option selected disabled>Shelf</option>");
+
+  for(var i=0;i<shelvesList.length;++i){
+    currShelf.innerHTML += "<option value='"+shelvesList[i]+"'>"+shelvesList[i]+"</option>";
+  }
+
   currShelf.setAttribute("title","Status");
+  currShelf.addEventListener("change",shelfChange,false);
   shelvesDiv.appendChild(currShelf);
 
   var optionsRow2 = createEle("div",{attr:"class",val:"row"},"");
   optionsRow2.setAttribute("style","margin:10px;");
 
-  var like = createEle("li",{attr:"id",val:"like"},"<a href:'#' style='cursor:pointer;'>Like</a>");
+  var like = createEle("li",{attr:"id",val:"likeBook"},"<a href:'#' style='cursor:pointer;'>Like</a>");
+  like.addEventListener("click",likeHandler,false);
+
+  var volAnchor = createEle("a",{attr:"href",val:"https://books.google.co.in/books?id="+fvolumeId},"GBooks Link");
 
   optionsRow1.appendChild(statusDiv);
   optionsRow1.appendChild(shelvesDiv);
   optionsRow2.appendChild(like);
+  optionsRow2.appendChild(volAnchor);
   optionsDiv.appendChild(optionsRow1);
   optionsDiv.appendChild(optionsRow2);
 
   encloser.appendChild(img);
   encloser.appendChild(bookDetails);
   encloser.appendChild(optionsDiv);
-
 
   document.getElementById("displayRegion").appendChild(encloser);
   document.getElementById("displayRegion").appendChild(hr2);
@@ -99,6 +138,30 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * (max));
 }
 
+function getShelfValues(){
+  var xmlhttp;
+  if (window.XMLHttpRequest) {
+        xmlhttp = new XMLHttpRequest();
+  }
+   else{
+      xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+
+  var url = "getShelves.php";
+  var parameter = "userId="+curr_user_id;
+  xmlhttp.onreadystatechange = function(){
+	    if(this.readyState==4&&this.status==200){
+        shelvesList = JSON.parse(this.responseText);
+	    }
+    };
+
+    xmlhttp.open("POST",url,true);//true implies asynchronous
+    xmlhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+    xmlhttp.send(parameter);
+
+
+}
+
 function initialise(){
   var xmlhttp;
   if (window.XMLHttpRequest) {
@@ -108,7 +171,10 @@ function initialise(){
       xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
   }
 
+  getShelfValues();
+
   var randString = randBooks[getRandomInt(randBooks.length)];
+  // var randString = String(1000000000000+Math.round(Math.random()*9999999999999));
   var url = "https://www.googleapis.com/books/v1/volumes?q="+randString;
 
   xmlhttp.onreadystatechange = function(){
@@ -142,6 +208,61 @@ function initialise(){
     xmlhttp.send();
 }
 
+function likeHandler(e){
+  if(e.target.innerHTML == "Like"){
+    e.target.innerHTML = "Dislike";
+  }
+  else{
+    e.target.innerHTML = "Like";
+  }
+
+  var parent = e.target.parentNode.parentNode.parentNode.parentNode;
+  var auth = parent.children[1].firstChild.children[1].textContent;
+  var bookId = parent.children[2].children[1].children[1].href;
+  bookId = bookId.substring(bookId.indexOf('id=')+3);
+  var bookObj = {
+
+    title:  parent.children[1].firstChild.firstChild.textContent,
+    author: auth.substring(4),
+    action: "like",
+    volId:  bookId,
+    support: '1',
+  }
+  console.log(bookObj);
+
+  var xmlhttp;
+  if (window.XMLHttpRequest) {
+        xmlhttp = new XMLHttpRequest();
+  }
+   else{
+      xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+
+  var url = "addActivity.php";
+  var parameter = "actObj="+JSON.stringify(bookObj);
+
+  xmlhttp.onreadystatechange = function(){
+      if(this.readyState==4&&this.status==200){
+        if(this.responseText == true)
+        console.log('liked successfully!');
+      }
+  }
+  xmlhttp.open("POST",url,true);
+  xmlhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+  xmlhttp.send(parameter);
+}
+
+function load()
+{   url = 'refresher.php';
+    element = document.getElementById('torefresh');
+    req = new XMLHttpRequest();
+    req.open("GET", url, false);
+    req.send(null);
+
+    element.innerHTML = req.responseText;
+    console.log("refreshing");
+}
+
 function nothingToDisplay(obj){
   obj.innerHTML = "Nothing To Display!";
 }
@@ -166,8 +287,6 @@ function searchBooks(input,isSearchButtonClicked){
     case '5': url = "https://www.googleapis.com/books/v1/volumes?q=+subject:"+input;break;
     default: url = "https://www.googleapis.com/books/v1/volumes?q="+input;
   }
-  console.log(document.getElementById('mode').value);
-  console.log(url);
 
 
   xmlhttp.onreadystatechange = function(){
@@ -182,7 +301,7 @@ function searchBooks(input,isSearchButtonClicked){
             clearResults("modalContent");
           }
 
-          console.log(booksData);
+
           var max = isSearchButtonClicked?booksData.items.length:((booksData.items.length>5)?5:booksData.items.length);
           for(i=0;i<max;++i){
             var title = booksData.items[i].volumeInfo.title;
@@ -220,6 +339,82 @@ function searchBooks(input,isSearchButtonClicked){
     };
     xmlhttp.open("GET",url,true);
     xmlhttp.send();
+}
+
+function shelfChange(e){//change the volid detector when adding comments
+  var parent = e.target.parentNode.parentNode.parentNode.parentNode;
+  var auth = parent.children[1].firstChild.children[1].textContent;
+  var bookId = parent.children[2].children[1].children[1].href;
+  bookId = bookId.substring(bookId.indexOf('id=')+3);
+  var bookObj = {
+
+    title:  parent.children[1].firstChild.firstChild.textContent,
+    author: auth.substring(4),
+    action: "shelf",
+    volId:  bookId,
+    support:  e.target.value,
+  }
+  console.log(bookObj);
+
+  var xmlhttp;
+  if (window.XMLHttpRequest) {
+        xmlhttp = new XMLHttpRequest();
+  }
+   else{
+      xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+
+  var url = "addActivity.php";
+  var parameter = "actObj="+JSON.stringify(bookObj);
+
+  xmlhttp.onreadystatechange = function(){
+	    if(this.readyState==4&&this.status==200){
+        if(this.responseText == true)
+        console.log('shelved successfully!');
+      }
+  }
+  xmlhttp.open("POST",url,true);
+  xmlhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+  xmlhttp.send(parameter);
+
+}
+
+function statusChange(e){
+  var parent = e.target.parentNode.parentNode.parentNode.parentNode;
+  var auth = parent.children[1].firstChild.children[1].textContent;
+  var bookId = parent.children[2].children[1].children[1].href;
+  bookId = bookId.substring(bookId.indexOf('id=')+3);
+  var bookObj = {
+
+    title:  parent.children[1].firstChild.firstChild.textContent,
+    author: auth.substring(4),
+    action: "status",
+    volId:  bookId,
+    support:  e.target.value,
+  }
+  console.log(bookObj);
+
+  var xmlhttp;
+  if (window.XMLHttpRequest) {
+        xmlhttp = new XMLHttpRequest();
+  }
+   else{
+      xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+
+  var url = "addActivity.php";
+  var parameter = "actObj="+JSON.stringify(bookObj);
+
+  xmlhttp.onreadystatechange = function(){
+	    if(this.readyState==4&&this.status==200){
+        if(this.responseText == true)
+        console.log('statused successfully!');
+      }
+  }
+  xmlhttp.open("POST",url,true);
+  xmlhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+  xmlhttp.send(parameter);
+
 }
 
 
