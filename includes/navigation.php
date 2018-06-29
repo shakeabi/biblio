@@ -19,12 +19,9 @@
                 <li>
                     <a href="profile.php">Profile</a>
                 </li>
-                <li class="list-group-item" style="margin:5px;border-radius:5px;">
-                    <span id="torefresh">ActivityMode(<?php echo ucfirst($_SESSION['visibility']); ?>):</span>
-                    <div class="material-switch pull-right">
-                        <input id="switchVisibility" name="someSwitchOption001" type="checkbox"/>
-                        <label for="switchVisibility" class="label-success"></label>
-                    </div>
+                <li class="" style="margin:11px;border-radius:5px;background:white;padding: 0px 0px 0px 5px;">
+                    <span id="torefresh">Activity Mode <button class="btn btn-primary btn-sm" id="switchVisibility"> <span class="" id="refresh"><?php echo ucfirst($_SESSION['visibility']); ?></span></button></span>
+
                 </li>
 
             </ul>

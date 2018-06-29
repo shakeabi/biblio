@@ -1,5 +1,7 @@
 <?php
 include_once('config.php');
+
+$f_error = "";
 if(isset($_POST['add_shelf'])){
   $table = $_SESSION['curr_id']."shelves";
 
@@ -7,6 +9,30 @@ if(isset($_POST['add_shelf'])){
   $query .= "VALUES('{$_POST['shelf_name']}')";
   $result = $connection->query($query);
   confirmQuery($result);
+}
+if(isset($_POST['add_follow'])){
+
+  $table = "users";
+  $username_follow = $connection->real_escape_string($_POST['follow_name']);
+
+  $query = "SELECT username FROM $table WHERE username = '{$username_follow}'";
+  $result = $connection->query($query);
+  confirmQuery($result);
+
+  if($result->num_rows>0){
+    $table = $_SESSION['curr_id']."following";
+
+    $query = "INSERT INTO $table(followName) ";
+    $query .= "VALUES('{$_POST['follow_name']}')";
+    $result_temp = $connection->query($query);
+    confirmQuery($result_temp);
+  }
+
+
+  else {
+    $f_error = 'Wrong Username!';
+  }
+
 }
  ?>
 
@@ -40,7 +66,7 @@ if(isset($_POST['add_shelf'])){
           <ul>
             <?php
               $table = $_SESSION['curr_id']."shelves";
-              $query = "SELECT DISTINCT shelfName FROM $table";
+              $query = "SELECT DISTINCT shelfName FROM $table ORDER BY shelfName";
               $result = $connection->query($query);
               confirmQuery($result);
               while($row = $result->fetch_assoc()){
@@ -60,7 +86,40 @@ if(isset($_POST['add_shelf'])){
 
     </div>
     <div class="well">
-        <h4><u>Following:</u></h4>
+      <p>
+        <?php echo $f_error; ?>
+      </p>
+      <form action="" method="post" style="margin-bottom:15px;">
+      <div class="input-group">
+          <input name="follow_name" type="text" class="form-control" placeholder="Enter username to follow" onfocus="<?php $f_error='';?>" required>
+          <span class="input-group-btn">
+              <button name="add_follow" class="btn btn-default" type="submit">
+                  <span class="glyphicon glyphicon-plus"></span>
+              </button>
+          </span>
+      </div>
+      </form>
+      <ul>
+        <?php
+          $table = $_SESSION['curr_id']."following";
+          $query = "SELECT DISTINCT followName FROM $table";
+          $result = $connection->query($query);
+          confirmQuery($result);
+          while($row = $result->fetch_assoc()){
+            $f_name = $row['followName'];
+            if($s_name!=""){
+            ?>
+
+          <li style="margin-top:3px;"><button class="btn btn-info" onclick="location.href='profile.php?mode=follow&follow=<?php echo $f_name;?>';"><?php echo $f_name;?></button></li>
+
+        <?php
+            }
+          }
+        ?>
+
+      </ul>
+
+
 
     </div>
 

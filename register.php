@@ -98,6 +98,14 @@ if(isset($_POST['register'])){
                 $_SESSION['visibility'] = "public";
 
                 //creating personal tables..
+                $table = $_SESSION['curr_id']."following";
+                $query = "CREATE TABLE $table(
+                    id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    followName VARCHAR(255) NOT NULL
+                    )";
+                $result_temp = $connection->query($query);
+                confirmQuery($result_temp);
+
                 $table = $_SESSION['curr_id']."shelves";
                 $query = "CREATE TABLE $table(
                 		id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,

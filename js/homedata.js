@@ -90,8 +90,9 @@ function displayBooks(ftitle,fauthor,fdesc,fimgLink,favgRating,fvolumeId,readMor
   var optionsRow2 = createEle("div",{attr:"class",val:"row"},"");
   optionsRow2.setAttribute("style","margin:10px;");
 
-  var like = createEle("li",{attr:"id",val:"likeBook"},"<a href:'#' style='cursor:pointer;'>Like</a>");
+  var like = createEle("li",{attr:"id",val:"likeBook"},"<a href:'#' style='cursor:pointer;'>Like <span class='glyphicon glyphicon-thumbs-up' style='cursor:pointer;'></span></a>");
   like.addEventListener("click",likeHandler,false);
+
 
   var volAnchor = createEle("a",{attr:"href",val:"https://books.google.co.in/books?id="+fvolumeId},"GBooks Link");
 
@@ -209,11 +210,13 @@ function initialise(){
 }
 
 function likeHandler(e){
-  if(e.target.innerHTML == "Like"){
-    e.target.innerHTML = "Dislike";
+
+  if(e.target.textContent == "Like "){
+    console.log("changing");
+    e.target.innerHTML = "Dislike <span class='glyphicon glyphicon-thumbs-down' style='cursor:pointer;'></span>";
   }
   else{
-    e.target.innerHTML = "Like";
+    e.target.innerHTML = "Like <span class='glyphicon glyphicon-thumbs-up' style='cursor:pointer;'></span>";
   }
 
   var parent = e.target.parentNode.parentNode.parentNode.parentNode;
@@ -254,7 +257,7 @@ function likeHandler(e){
 
 function load()
 {   url = 'refresher.php';
-    element = document.getElementById('torefresh');
+    element = document.getElementById('refresh');
     req = new XMLHttpRequest();
     req.open("GET", url, false);
     req.send(null);
