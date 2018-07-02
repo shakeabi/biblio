@@ -5,7 +5,7 @@ Biblio is a social networking website for book readers allowing individuals to s
 ## Features
 
 * Secure login and sign up options with optional captcha facility*.
-* Users can add a book to their library/bookshelf, mark it as favorite, like the book, mark a book as ‘want to read’, ‘currently reading’ or ‘finished reading’.
+* Users can add a book to their library/bookshelf, mark it as favorite, like the book, mark a book as ‘want to read’, ‘currently reading’ or ‘finished reading’ and also be able to Review it.
 * A user’s profile page have the following - activity of the user, status of various books, bookshelves and the people whom they follow.
 * The search bar in the home page enables user to search books by Title, Author, Publisher, ISBN or subject.
 * Asynchronous Instant Searching. User's can see best search results dynamically.

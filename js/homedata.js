@@ -92,6 +92,12 @@ function displayBooks(ftitle,fauthor,fdesc,fimgLink,favgRating,fvolumeId,readMor
 
   var like = createEle("li",{attr:"id",val:"likeBook"},"<a href:'#' style='cursor:pointer;'>Like <span class='glyphicon glyphicon-thumbs-up' style='cursor:pointer;'></span></a>");
   like.addEventListener("click",likeHandler,false);
+  var reviewInput = createEle("textarea",{attr:"id",val:"review"},"");
+  reviewInput.setAttribute("class","form-control");
+  reviewInput.setAttribute("rows","4");
+  reviewInput.setAttribute("cols","30");
+  var review = createEle("li",{attr:"id",val:"reviewBook"},"<a href:'#' style='cursor:pointer;'>Submit Review</a>");
+  review.addEventListener("click",reviewHandler,false);
 
 
   var volAnchor = createEle("a",{attr:"href",val:"https://books.google.co.in/books?id="+fvolumeId},"GBooks Link");
@@ -99,6 +105,8 @@ function displayBooks(ftitle,fauthor,fdesc,fimgLink,favgRating,fvolumeId,readMor
   optionsRow1.appendChild(statusDiv);
   optionsRow1.appendChild(shelvesDiv);
   optionsRow2.appendChild(like);
+  optionsRow2.appendChild(reviewInput);
+  optionsRow2.appendChild(review);
   optionsRow2.appendChild(volAnchor);
   optionsDiv.appendChild(optionsRow1);
   optionsDiv.appendChild(optionsRow2);
@@ -129,6 +137,8 @@ function displayDySearchBooks(ftitle,fauthor,fimgLink){
 
   encloser.appendChild(img);
   encloser.appendChild(bookDetails);
+  encloser.addEventListener("click",searchClickHandler,false);
+  encloser.setAttribute("style","cursor:pointer");
 
   document.getElementById("modalContent").appendChild(encloser);
   document.getElementById("modalContent").appendChild(hr1);
@@ -221,7 +231,7 @@ function likeHandler(e){
 
   var parent = e.target.parentNode.parentNode.parentNode.parentNode;
   var auth = parent.children[1].firstChild.children[1].textContent;
-  var bookId = parent.children[2].children[1].children[1].href;
+  var bookId = parent.children[2].children[1].children[3].href;
   bookId = bookId.substring(bookId.indexOf('id=')+3);
   var bookObj = {
 
@@ -264,6 +274,22 @@ function load()
 
     element.innerHTML = req.responseText;
     console.log("refreshing");
+}
+
+function notAldreadyRead(volId){
+  var flag = 0;
+  var flag_response = 0;
+  console.log("checking");
+
+
+  if(flag_response){
+      if(flag==0){
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
 }
 
 function nothingToDisplay(obj){
@@ -344,10 +370,61 @@ function searchBooks(input,isSearchButtonClicked){
     xmlhttp.send();
 }
 
-function shelfChange(e){//change the volid detector when adding comments
+function searchClickHandler(e){
+  var volId = this.firstChild.src;
+  volId = volId.substring(volId.indexOf('id=')+3);
+  volId = volId.substring(0,volId.indexOf('&'));
+  console.log(volId);
+
+
+    var xmlhttp;
+    if (window.XMLHttpRequest) {
+          xmlhttp = new XMLHttpRequest();
+    }
+     else{
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+
+    var url = "https://www.googleapis.com/books/v1/volumes?q="+volId;
+
+    clearResults('displayRegion');
+
+    xmlhttp.onreadystatechange = function(){
+  	    if(this.readyState==4&&this.status==200){
+
+  	    	var booksData = JSON.parse(this.responseText);
+  	    	if(booksData.totalItems!=0){
+            var max = 1;
+            for(i=0;i<max;++i){
+              var title = booksData.items[i].volumeInfo.title;
+              var author = booksData.items[i].volumeInfo.authors?booksData.items[i].volumeInfo.authors[0]:"NA";
+              var desc = booksData.items[i].volumeInfo.description?booksData.items[i].volumeInfo.description:"";
+              var imgLinks = booksData.items[i].volumeInfo.imageLinks?booksData.items[i].volumeInfo.imageLinks.thumbnail:null;
+              var avgRating = booksData.items[i].volumeInfo.averageRating?booksData.items[i].volumeInfo.averageRating:"NA";
+              var volumeId = booksData.items[i].id;
+              var readMore = false;
+
+
+                if(desc!=null && desc.length >= 350){
+                  desc = desc.substr(0,349) + "...";
+                  readMore = true;
+                }
+                document.getElementById('pageHeading').innerHTML = "Search Results:";
+                displayBooks(title,author,desc,imgLinks,avgRating,volumeId,readMore);
+              }
+            }
+
+
+  	    	}
+  	    }
+      xmlhttp.open("GET",url,true);
+      xmlhttp.send();
+}
+
+function shelfChange(e){//change the volid detector when adding reviews
   var parent = e.target.parentNode.parentNode.parentNode.parentNode;
   var auth = parent.children[1].firstChild.children[1].textContent;
-  var bookId = parent.children[2].children[1].children[1].href;
+  var bookId = parent.children[2].children[1].children[3].href;
   bookId = bookId.substring(bookId.indexOf('id=')+3);
   var bookObj = {
 
@@ -385,7 +462,7 @@ function shelfChange(e){//change the volid detector when adding comments
 function statusChange(e){
   var parent = e.target.parentNode.parentNode.parentNode.parentNode;
   var auth = parent.children[1].firstChild.children[1].textContent;
-  var bookId = parent.children[2].children[1].children[1].href;
+  var bookId = parent.children[2].children[1].children[3].href;
   bookId = bookId.substring(bookId.indexOf('id=')+3);
   var bookObj = {
 
@@ -417,6 +494,50 @@ function statusChange(e){
   xmlhttp.open("POST",url,true);
   xmlhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
   xmlhttp.send(parameter);
+
+}
+
+function reviewHandler(e){
+  if(e.target.textContent == "Submit Review"){
+    e.target.innerHTML = "Review Submitted";
+
+    var parent = e.target.parentNode.parentNode.parentNode.parentNode;
+    var auth = parent.children[1].firstChild.children[1].textContent;
+    var bookId = parent.children[2].children[1].children[3].href;
+    bookId = bookId.substring(bookId.indexOf('id=')+3);
+    var review = parent.children[2].children[1].children[1].value;
+    var bookObj = {
+
+      title:  parent.children[1].firstChild.firstChild.textContent,
+      author: auth.substring(4),
+      action: "review",
+      volId:  bookId,
+      support: review,
+    }
+    console.log(bookObj);
+
+    var xmlhttp;
+    if (window.XMLHttpRequest) {
+          xmlhttp = new XMLHttpRequest();
+    }
+     else{
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+
+    var url = "addActivity.php";
+    var parameter = "actObj="+JSON.stringify(bookObj);
+
+    xmlhttp.onreadystatechange = function(){
+        if(this.readyState==4&&this.status==200){
+          if(this.responseText == true)
+          console.log('reviewed successfully!');
+        }
+    }
+    xmlhttp.open("POST",url,true);
+    xmlhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+    xmlhttp.send(parameter);
+  }
+
 
 }
 

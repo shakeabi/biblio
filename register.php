@@ -137,6 +137,7 @@ if(isset($_POST['register'])){
                     imgLink VARCHAR(1023),
                     status VARCHAR(255),
                     shelf VARCHAR(255),
+                    review VARCHAR(1023),
                     likes VARCHAR(255) DEFAULT '0',
                     volId VARCHAR(255) NOT NULL
                     )";
@@ -149,7 +150,7 @@ if(isset($_POST['register'])){
                     bookName VARCHAR(255) NOT NULL,
                     authorName VARCHAR(255),
                     imgLink VARCHAR(1023),
-                    activity VARCHAR(255),
+                    activity VARCHAR(1023),
                     actSupport VARCHAR(255),
                     volId VARCHAR(255),
                     visibility VARCHAR(255)

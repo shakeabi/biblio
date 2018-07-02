@@ -59,7 +59,7 @@
                     global $disp_head;
                     global $connection;
 
-                    $shareURL = "<iframe src='https://www.facebook.com/sharer/sharer.php?u=localhost%2Fbook%2Fprofile.php%2F&amp%3Bsrc=sdkpreparse' width='73' height='28' style='border:none;overflow:hidden' scrolling='no' frameborder='0' allowTransparency='true' allow='encrypted-media'></iframe>";
+                    $shareURL = "<iframe src='https://www.facebook.com/plugins/share_button.php?href=http%3A%2F%2Flocalhost%2Fbook%2Fprofile.php%3Fmode%3Dfollow%26follow%3Dabishake&layout=button&size=large&mobile_iframe=true&width=84&height=28&appId' width='84' height='28' style='border:none;overflow:hidden' scrolling='no' frameborder='0' allowTransparency='true' allow='encrypted-media'></iframe>";
 
                     echo "<h3 class='page-header'><u>{$disp_head}</u>{$shareURL}</h3>";
 
@@ -91,12 +91,14 @@
                                     switch($act_act){
                                       case 'status': echo "Changed reading status to: ".$act_support;
                                                       break;
-                                      case 'shelf': echo "Book added to '".$act_support."' shelf.";
+                                      case 'shelf':   echo "Book added to '".$act_support."' shelf.";
                                                       break;
                                       case 'like':    if($act_support)
                                                       echo "Liked this book.";
                                                       else
                                                       echo "Disliked this book.";
+                                                      break;
+                                      case 'review':  echo "Reviewed this book as: '".$act_support."'";
                                                       break;
                                     }
                                 ?>
@@ -223,6 +225,8 @@
                                                       echo "Liked this book.";
                                                       else
                                                       echo "Disliked this book.";
+                                                      break;
+                                      case 'review':  echo "Reviewed this book as: '".$act_support."'";
                                                       break;
                                     }
                                 ?>

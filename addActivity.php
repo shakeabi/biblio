@@ -49,7 +49,7 @@ if(isset($_POST['actObj'])){
     }
 
   }
-  /////////////////////////////////////////////////////// working on this
+  ///////////////////////////////////////////////////////
   if($obj->action == "like"){
     $table = $_SESSION['curr_id']."books";
 
@@ -72,6 +72,29 @@ if(isset($_POST['actObj'])){
     }
     else {
         $query = "INSERT INTO $table(bookName,authorName,imgLink,likes,volId) ";
+        $query .= "VALUES('$obj->title','$obj->author','$imgLink','$obj->support','$obj->volId')";
+        $result_temp = $connection->query($query);
+        confirmQuery($result_temp);
+    }
+
+  }
+
+  ///////////////////////////////////////////////////////
+  if($obj->action == "review"){
+    $table = $_SESSION['curr_id']."books";
+
+    $query = "SELECT * FROM $table WHERE volId = '$obj->volId'";
+    $result = $connection->query($query);
+    confirmQuery($result);
+
+    if($result->num_rows>0){
+        $row = $result->fetch_assoc();
+        $query = "UPDATE $table SET review = '$obj->support' WHERE volId = '$obj->volId'";
+        $result_temp = $connection->query($query);
+        confirmQuery($result_temp);
+    }
+    else {
+        $query = "INSERT INTO $table(bookName,authorName,imgLink,review,volId) ";
         $query .= "VALUES('$obj->title','$obj->author','$imgLink','$obj->support','$obj->volId')";
         $result_temp = $connection->query($query);
         confirmQuery($result_temp);
