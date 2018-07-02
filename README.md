@@ -41,6 +41,7 @@ $publicKey = "public_key";
 
 ## Built using
 
+* [Google Books API](https://developers.google.com/books/docs/overview)
 * [HTML](https://www.w3.org/html/)
 * [CSS](https://www.w3.org/Style/CSS/)
 * [Vanilla JS](http://vanilla-js.com/)
