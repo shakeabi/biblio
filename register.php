@@ -222,7 +222,7 @@ if(isset($_POST['register'])){
                               </p>
                               <?php if($recaptcha == "enabled"){
                                       echo "<p>
-                                              <div class='reCaptchaClass'><div class='g-recaptcha' data-sitekey=$public_key;} ></div></div>
+                                              <div class='reCaptchaClass'><div class='g-recaptcha' data-sitekey=$public_key ></div></div>
                                             </p>";
                                     }
                                 ?>
