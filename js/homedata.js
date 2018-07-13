@@ -186,7 +186,7 @@ function initialise(){
 
   var randString = randBooks[getRandomInt(randBooks.length)];
   // var randString = String(1000000000000+Math.round(Math.random()*9999999999999));
-  var url = "https://www.googleapis.com/books/v1/volumes?q="+randString;
+  var url = "https://www.googleapis.com/books/v1/volumes?q="+randString+"&key=AIzaSyDYGGsWxP-2k2HHGLblEj5282E0Ak2HNFg";
 
   xmlhttp.onreadystatechange = function(){
 	    if(this.readyState==4&&this.status==200){
@@ -316,6 +316,8 @@ function searchBooks(input,isSearchButtonClicked){
     case '5': url = "https://www.googleapis.com/books/v1/volumes?q=+subject:"+input;break;
     default: url = "https://www.googleapis.com/books/v1/volumes?q="+input;
   }
+    
+    url+="&key=AIzaSyDYGGsWxP-2k2HHGLblEj5282E0Ak2HNFg";
 
 
   xmlhttp.onreadystatechange = function(){
